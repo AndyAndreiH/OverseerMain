@@ -5,6 +5,7 @@
     </CLASSES>
     <JAVADOC>
       <root url="jar://$MAVEN_REPOSITORY$/org/bukkit/bukkit/1.8-R0.1-SNAPSHOT/bukkit-1.8-R0.1-20150213.214828-171-javadoc.jar!/" />
+      <root url="http://jd.bukkit.org/javadocs/" />
     </JAVADOC>
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/org/bukkit/bukkit/1.8-R0.1-SNAPSHOT/bukkit-1.8-R0.1-20150213.214828-171-sources.jar!/" />

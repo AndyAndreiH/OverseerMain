@@ -1,11 +1,17 @@
 name: OverseerMain
+author: AndyAndreiH
+authors: [Migs84]
+website: http://katgamestudios.com/
 main: com.katgamestudios.andyandreih.overseer.main.OverseerMain
-version: 0.0.1-SNAPSHOT
+version: 0.0.2-SNAPSHOT
 depend: [SQLibrary]
+loadbefore: [OverseerAuth]
+database: true
 commands:
    overseer:
       description: The main command for Overseer
       usage: /overseer [subcommand/help]
-   os:
-      description: The main command for Overseer
-      usage: /os [subcommand/help]
+      aliases: os
+permissions:
+   overseer.*:
+      description: Master permission node

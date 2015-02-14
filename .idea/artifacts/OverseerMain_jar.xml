@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="OverseerMain:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/OverseerMain_jar</output-path>
+    <root id="archive" name="OverseerMain.jar">
+      <element id="module-output" name="OverseerMain" />
+    </root>
+  </artifact>
+</component>
