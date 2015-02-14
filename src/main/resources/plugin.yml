@@ -1,0 +1,11 @@
+name: OverseerMain
+main: com.katgamestudios.andyandreih.overseer.main.OverseerMain
+version: 0.0.1-SNAPSHOT
+depend: [SQLibrary]
+commands:
+   overseer:
+      description: The main command for Overseer
+      usage: /overseer [subcommand/help]
+   os:
+      description: The main command for Overseer
+      usage: /os [subcommand/help]
