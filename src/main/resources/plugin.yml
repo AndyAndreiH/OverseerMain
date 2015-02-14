@@ -3,10 +3,10 @@ author: AndyAndreiH
 authors: [Migs84]
 website: http://katgamestudios.com/
 main: com.katgamestudios.andyandreih.overseer.main.OverseerMain
-version: 0.0.3-SNAPSHOT
+version: 0.0.4-SNAPSHOT
 depend: [SQLibrary]
 loadbefore: [OverseerAuth]
-database: true
+database: false
 commands:
    overseer:
       description: The main command for Overseer

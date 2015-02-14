@@ -32,14 +32,17 @@ public class CommandListener implements CommandExecutor {
                 displayHelp(sender);
                 return true;
             }
-            else if(args.length == 1) {
-                if(args[0].equalsIgnoreCase("help")) {
-                    displayHelp(sender);
-                    return true;
+            else {
+                if(args.length == 1) {
+                    if(args[0].equalsIgnoreCase("help")) {
+                        displayHelp(sender);
+                        return true;
+                    }
                 }
-                else if(subCommands.containsKey(args[0])) {
+                if(subCommands.containsKey(args[0])) {
                     CommandExecutor cmdExec = subCommands.get(args[0]);
                     cmdExec.onCommand(sender, cmd, label, args);
+                    return true;
                 }
             }
         }

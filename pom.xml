@@ -6,7 +6,7 @@
 
     <groupId>com.katgamestudios.andyandreih</groupId>
     <artifactId>OverseerMain</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
     <description>Overseer Suite's main module</description>
 
     <build>

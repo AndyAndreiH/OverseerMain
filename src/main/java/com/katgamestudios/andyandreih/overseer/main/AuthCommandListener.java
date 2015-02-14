@@ -26,18 +26,12 @@ public class AuthCommandListener implements CommandExecutor {
                         sender.sendMessage("You do not have the permission to access this command!");
                         return true;
                     }
-                    displaySimulateHelp(sender);
-                    return true;
-                }
-                if(args[0].equalsIgnoreCase("simulate") && args.length >= 3) {
-                    if(!(sender instanceof ConsoleCommandSender ||
-                            (sender instanceof Player && ((Player) sender).getPlayer().isOp())
-                    )) {
-                        sender.sendMessage("You do not have the permission to access this command!");
+                    if(args.length == 1) {
+                        displaySimulateHelp(sender);
                         return true;
                     }
                     if(args[1].equalsIgnoreCase("join")) {
-                        if(!args[2].isEmpty() && !(args[2] == "")) {
+                        if(args.length == 3) {
                             simulateJoin(sender, args[2]);
                             return true;
                         }
@@ -105,7 +99,6 @@ public class AuthCommandListener implements CommandExecutor {
         sender.sendMessage("-------------- Overseer - Simulate Help --------------");
         sender.sendMessage(" /overseer simulate [option] [arguments]");
         sender.sendMessage("   /overseer simulate join <username>");
-        sender.sendMessage("[  /overseer simulate quit                           ]");
         sender.sendMessage("   /overseer simulate register <username> <password>");
         sender.sendMessage("   /overseer simulate login <username> <password>");
         sender.sendMessage("   /overseer simulate hash <password> <salt>");
