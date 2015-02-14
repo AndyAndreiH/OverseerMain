@@ -10,11 +10,20 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class CommandListener implements CommandExecutor {
     public OverseerMain mainClass = null;
+
+    public static HashMap<String, CommandExecutor> subCommands = new HashMap<String, CommandExecutor>();
+
+    public static void registerSubCommand(String subCommand, CommandExecutor executor) {
+        if(!subCommands.containsKey(subCommand)) {
+            subCommands.put(subCommand, executor);
+        }
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -27,6 +36,10 @@ public class CommandListener implements CommandExecutor {
                 if(args[0].equalsIgnoreCase("help")) {
                     displayHelp(sender);
                     return true;
+                }
+                else if(subCommands.containsKey(args[0])) {
+                    CommandExecutor cmdExec = subCommands.get(args[0]);
+                    cmdExec.onCommand(sender, cmd, label, args);
                 }
             }
         }
