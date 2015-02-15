@@ -3,7 +3,7 @@ author: AndyAndreiH
 authors: [Migs84]
 website: http://katgamestudios.com/
 main: com.katgamestudios.andyandreih.overseer.main.OverseerMain
-version: 0.1.1-SNAPSHOT
+version: 0.2.0-SNAPSHOT
 depend: [SQLibrary]
 loadbefore: [OverseerAuth]
 database: false

@@ -66,12 +66,26 @@ public class DatabaseController {
         if(!dbLocal.isTable("users")) {
             try {
                 dbLocal.query("CREATE TABLE users (" +
-                        "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        "uuid VARCHAR(60) UNIQUE," +
-                        "joinDate DATETIME DEFAULT CURRENT_TIMESTAMP," +
-                        "userName VARCHAR(30) UNIQUE," +
-                        "password VARCHAR(100)," +
-                        "salt VARCHAR(100));");
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "uuid VARCHAR(60) UNIQUE," +
+                    "joinDate DATETIME DEFAULT CURRENT_TIMESTAMP," +
+                    "userName VARCHAR(30) UNIQUE," +
+                    "password VARCHAR(100)," +
+                    "salt VARCHAR(100));");
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void generateAdminLogsTable() {
+        if(!dbLocal.isTable("admin_logs")) {
+            try {
+                dbLocal.query("CREATE TABLE admin_logs (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "adminName VARCHAR(30)," +
+                    "commandTime DATETIME DEFAULT CURRENT_TIMESTAMP," +
+                    "command VARCHAR(255));");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -94,10 +108,20 @@ public class DatabaseController {
         String securePass = bytesToHex(securePassBytes);
         try {
             dbLocal.query("INSERT INTO users (uuid,userName,password,salt) VALUES ('" +
-                    userUUID.toString() + "','" +
-                    userName + "','" +
-                    securePass + "','" +
-                    salt + "');");
+                userUUID.toString() + "','" +
+                userName + "','" +
+                securePass + "','" +
+                salt + "');");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void logAdminCommand(String adminName, String command) {
+        try {
+            dbLocal.query("INSERT INTO admin_logs (adminName,command) VALUES ('" +
+                adminName + "','" +
+                command + "');");
         } catch (SQLException e) {
             e.printStackTrace();
         }

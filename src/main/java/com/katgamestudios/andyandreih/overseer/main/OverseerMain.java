@@ -34,19 +34,5 @@ public class OverseerMain extends JavaPlugin {
             dbCtrl.generateUsersTable();
         }
         getLogger().info("Generated local database.");
-
-        File authFile = new File("OverseerAuth.jar");
-        Plugin authPlugin = null;
-        if(authFile.exists()) {
-            getLogger().info("Authentication module found. Attempting load...");
-            try {
-                authPlugin = getPluginLoader().loadPlugin(authFile);
-                getPluginLoader().enablePlugin(authPlugin);
-                getLogger().info("Authentication module loaded.");
-            } catch (InvalidPluginException e) {
-                e.printStackTrace();
-                getLogger().info("Failed to load authentication module.");
-            }
-        }
     }
 }
