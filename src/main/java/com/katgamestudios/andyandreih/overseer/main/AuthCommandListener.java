@@ -1,5 +1,6 @@
 package com.katgamestudios.andyandreih.overseer.main;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,78 +16,76 @@ import java.util.UUID;
 public class AuthCommandListener implements CommandExecutor {
     final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
 
+    private final String authPrefix = ChatColor.DARK_GRAY + "[AUTH] " + ChatColor.GRAY;
+
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if(cmd.getName().equalsIgnoreCase("overseer")) {
             if(args.length >= 1) {
                 if(args[0].equalsIgnoreCase("simulate")) {
-                    if(!(sender instanceof ConsoleCommandSender ||
-                            (sender instanceof Player && ((Player) sender).getPlayer().isOp())
-                    )) {
-                        sender.sendMessage("You do not have the permission to access this command!");
-                        return true;
-                    }
-                    if(args.length == 1) {
-                        displaySimulateHelp(sender);
-                        return true;
-                    }
-                    if(args[1].equalsIgnoreCase("join")) {
-                        if(args.length == 3) {
-                            simulateJoin(sender, args[2]);
-                            return true;
-                        }
-                        else {
-                            sender.sendMessage("SYNTAX: /overseer simulate join <username>");
-                            return true;
-                        }
-                    }
-                    else if(args[1].equalsIgnoreCase("register")) {
-                        if(args.length == 4) {
-                            try {
-                                OverseerMain.dbCtrl.registerUser(args[2], args[3]);
-                            } catch (NoSuchAlgorithmException e) {
-                                e.printStackTrace();
-                            } catch (UnsupportedEncodingException e) {
-                                e.printStackTrace();
+                    if (sender instanceof Player || sender instanceof ConsoleCommandSender) {
+                        if(sender instanceof Player) {
+                            Player player = (Player) sender;
+                            if(!player.hasPermission("overseer.auth.simulate")) {
+                                player.sendMessage(authPrefix + "You don't have permission to use this command!");
+                                return true;
                             }
-                            simulateJoin(sender, args[2]);
+                        }
+                        if (args.length == 1) {
+                            displaySimulateHelp(sender);
                             return true;
                         }
-                        else {
-                            sender.sendMessage("SYNTAX: /overseer simulate register <username> <password>");
-                            return true;
-                        }
-                    }
-                    else if(args[1].equalsIgnoreCase("login")) {
-                        if(args.length == 4) {
-                            try {
-                                simulateLogin(sender, args[2], args[3]);
-                            } catch (NoSuchAlgorithmException e) {
-                                e.printStackTrace();
-                            } catch (UnsupportedEncodingException e) {
-                                e.printStackTrace();
+                        if (args[1].equalsIgnoreCase("join")) {
+                            if (args.length == 3) {
+                                simulateJoin(sender, args[2]);
+                                return true;
+                            } else {
+                                sender.sendMessage(authPrefix + ChatColor.RED + "SYNTAX: /overseer simulate join <username>");
+                                return true;
                             }
-                            return true;
-                        }
-                        else {
-                            sender.sendMessage("SYNTAX: /overseer simulate login <username> <password>");
-                            return true;
-                        }
-                    }
-                    else if(args[1].equalsIgnoreCase("hash")) {
-                        if(args.length == 4) {
-                            try {
-                                sender.sendMessage(simulateHash(args[2], args[3]));
-                            } catch (NoSuchAlgorithmException e) {
-                                e.printStackTrace();
-                            } catch (UnsupportedEncodingException e) {
-                                e.printStackTrace();
+                        } else if (args[1].equalsIgnoreCase("register")) {
+                            if (args.length == 4) {
+                                try {
+                                    OverseerMain.dbCtrl.registerUser(args[2], args[3]);
+                                } catch (NoSuchAlgorithmException e) {
+                                    e.printStackTrace();
+                                } catch (UnsupportedEncodingException e) {
+                                    e.printStackTrace();
+                                }
+                                simulateJoin(sender, args[2]);
+                                return true;
+                            } else {
+                                sender.sendMessage(authPrefix + ChatColor.RED + "SYNTAX: /overseer simulate register <username> <password>");
+                                return true;
                             }
-                            return true;
-                        }
-                        else {
-                            sender.sendMessage("SYNTAX: /overseer simulate hash <password> <salt>");
-                            return true;
+                        } else if (args[1].equalsIgnoreCase("login")) {
+                            if (args.length == 4) {
+                                try {
+                                    simulateLogin(sender, args[2], args[3]);
+                                } catch (NoSuchAlgorithmException e) {
+                                    e.printStackTrace();
+                                } catch (UnsupportedEncodingException e) {
+                                    e.printStackTrace();
+                                }
+                                return true;
+                            } else {
+                                sender.sendMessage(authPrefix + ChatColor.RED + "SYNTAX: /overseer simulate login <username> <password>");
+                                return true;
+                            }
+                        } else if (args[1].equalsIgnoreCase("hash")) {
+                            if (args.length == 4) {
+                                try {
+                                    sender.sendMessage(simulateHash(args[2], args[3]));
+                                } catch (NoSuchAlgorithmException e) {
+                                    e.printStackTrace();
+                                } catch (UnsupportedEncodingException e) {
+                                    e.printStackTrace();
+                                }
+                                return true;
+                            } else {
+                                sender.sendMessage(authPrefix + ChatColor.RED + "SYNTAX: /overseer simulate hash <password> <salt>");
+                                return true;
+                            }
                         }
                     }
                 }
@@ -106,29 +105,17 @@ public class AuthCommandListener implements CommandExecutor {
     }
 
     private void simulateJoin(CommandSender sender, String userName) {
-        UUID userUUID = null;
-        try {
-            userUUID = UUIDFetcher.getUUIDOf(userName);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Map<String, String> userData = OverseerMain.dbCtrl.getUser(userUUID.toString());
+        Map<String, String> userData = OverseerMain.dbCtrl.getUser(userName);
         if(userData.containsKey("id")) {
-            sender.sendMessage("Please log in using the /login <password> command!");
+            sender.sendMessage(authPrefix + "Please log in using the " + ChatColor.BLUE + "/login <password>" + ChatColor.GRAY + " command!");
         }
         else {
-            sender.sendMessage("Please register using the /register <password> command!");
+            sender.sendMessage(authPrefix + "Please register using the " + ChatColor.BLUE + "/register <password>" + ChatColor.GRAY + " command!");
         }
     }
 
     private void simulateLogin(CommandSender sender, String userName, String password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
-        UUID userUUID = null;
-        try {
-            userUUID = UUIDFetcher.getUUIDOf(userName);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Map<String, String> userData = OverseerMain.dbCtrl.getUser(userUUID.toString());
+        Map<String, String> userData = OverseerMain.dbCtrl.getUser(userName);
         if(userData.containsKey("id")) {
             String processedPass = password + ":" + userData.get("salt");
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -136,14 +123,14 @@ public class AuthCommandListener implements CommandExecutor {
             byte[] securePassBytes = md.digest(passBytes);
             String securePass = bytesToHex(securePassBytes);
             if(userData.get("password").equalsIgnoreCase(securePass)) {
-                sender.sendMessage("Logged in successfully!");
+                sender.sendMessage(authPrefix + ChatColor.GREEN + "Logged in successfully!");
             }
             else {
-                sender.sendMessage("The password is incorrect!");
+                sender.sendMessage(authPrefix + ChatColor.RED + "The password is incorrect!");
             }
         }
         else {
-            sender.sendMessage("Please register using the /register <password> command!");
+            sender.sendMessage(authPrefix + "Please register using the " + ChatColor.BLUE + "/register <password>" + ChatColor.GRAY + " command!");
         }
     }
 

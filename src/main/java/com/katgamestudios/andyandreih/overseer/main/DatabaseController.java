@@ -71,7 +71,8 @@ public class DatabaseController {
                     "joinDate DATETIME DEFAULT CURRENT_TIMESTAMP," +
                     "userName VARCHAR(30) UNIQUE," +
                     "password VARCHAR(100)," +
-                    "salt VARCHAR(100));");
+                    "salt VARCHAR(100)," +
+                    "rank VARCHAR(30) DEFAULT 'GUEST');");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -98,6 +99,9 @@ public class DatabaseController {
             userUUID = UUIDFetcher.getUUIDOf(userName);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        if(userUUID == null) {
+            return;
         }
         SecureRandom saltGen = new SecureRandom();
         int salt = saltGen.nextInt();
@@ -127,10 +131,19 @@ public class DatabaseController {
         }
     }
 
-    public Map<String, String> getUser(String uuid) {
+    public Map<String, String> getUser(String userName) {
         Map<String, String> userData = new HashMap<String, String>();
+        UUID userUUID = null;
         try {
-            ResultSet result = dbLocal.query("SELECT * FROM users WHERE uuid=\"" + uuid + "\"");
+            userUUID = UUIDFetcher.getUUIDOf(userName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if(userUUID == null) {
+            return userData;
+        }
+        try {
+            ResultSet result = dbLocal.query("SELECT * FROM users WHERE uuid=\"" + userUUID.toString() + "\"");
             while(result.next()) {
                 userData.put("id", String.valueOf(result.getInt("id")));
                 userData.put("uuid", result.getString("uuid"));
@@ -138,12 +151,52 @@ public class DatabaseController {
                 userData.put("userName", result.getString("userName"));
                 userData.put("password", result.getString("password"));
                 userData.put("salt", result.getString("salt"));
+                userData.put("rank", result.getString("rank"));
             }
             result.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return userData;
+    }
+
+    public void setRank(String userName, Rank rank) {
+        UUID userUUID = null;
+        try {
+            userUUID = UUIDFetcher.getUUIDOf(userName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if(userUUID == null) {
+            return;
+        }
+        try {
+            dbLocal.query("UPDATE users SET rank=\"" + rank.name() + "\" WHERE uuid=\"" + userUUID.toString() + "\";");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Rank getRank(String userName) {
+        Rank userRank = null;
+        UUID userUUID = null;
+        try {
+            userUUID = UUIDFetcher.getUUIDOf(userName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if(userUUID == null) {
+            return userRank;
+        }
+        try {
+            ResultSet result = dbLocal.query("SELECT rank FROM users WHERE uuid=\"" + userUUID.toString() + "\"");
+            while(result.next()) {
+                userRank = Rank.valueOf(result.getString("rank"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return userRank;
     }
 
     public static String bytesToHex(byte[] bytes) {
@@ -154,5 +207,9 @@ public class DatabaseController {
             hexChars[j * 2 + 1] = hexArray[v & 0x0F];
         }
         return new String(hexChars);
+    }
+
+    public static enum Rank {
+        GUEST, USER, ADMIN, SYSOP
     }
 }
