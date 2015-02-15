@@ -32,6 +32,7 @@ public class OverseerMain extends JavaPlugin {
         dbCtrl.initDb(dataFolder);
         if(dbCtrl.openDb()) {
             dbCtrl.generateUsersTable();
+            dbCtrl.generateAdminLogsTable();
         }
         getLogger().info("Generated local database.");
     }
