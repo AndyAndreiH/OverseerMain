@@ -23,19 +23,15 @@ public class OverseerMain extends JavaPlugin {
 
         if(!getDataFolder().exists()) {
             getDataFolder().mkdir();
-            getLogger().info("Created plugin folder.");
         }
 
         getServer().getPluginManager().registerEvents(eventListen, this);
-        getLogger().info("Event listeners registered.");
 
         getCommand("overseer").setExecutor(cmdExec);
-        getLogger().info("Commands registered.");
 
         dbCtrl.initDb(dataFolder);
         if(dbCtrl.openDb()) {
             dbCtrl.generateUsersTable();
-            getLogger().info("Generated 'users' table.");
         }
         getLogger().info("Generated local database.");
 
